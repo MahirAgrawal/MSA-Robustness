@@ -9,12 +9,12 @@ from torch import optim
 import torch.nn as nn
 
 # path to a pretrained word embedding file
-word_emb_path = '/home/yingting/Glove/glove.840B.300d.txt'
+word_emb_path = '/content/MSA-Robustness/embeddings/glove.840B.300d.txt'
 assert word_emb_path
 
 username = Path.home().name
 project_dir = Path(__file__).resolve().parent.parent
-sdk_dir = project_dir.joinpath('CMU-MultimodalSDK')
+sdk_dir = project_dir.joinpath('/content/MSA-Robustness/CMU-MultimodalSDK')
 data_dir = project_dir.joinpath('datasets')
 data_dict = {'mosi': data_dir.joinpath('MOSI'), 'mosei': data_dir.joinpath(
     'MOSEI'), 'ur_funny': data_dir.joinpath('UR_FUNNY')}
