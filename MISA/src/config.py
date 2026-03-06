@@ -9,7 +9,7 @@ from torch import optim
 import torch.nn as nn
 
 # path to a pretrained word embedding file
-word_emb_path = '/content/MSA-Robustness/embeddings/glove.840B.300d.txt'
+word_emb_path = '/content/embeddings/glove.840B.300d.txt'
 assert word_emb_path
 
 username = Path.home().name
