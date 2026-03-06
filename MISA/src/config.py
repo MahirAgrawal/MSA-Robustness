@@ -14,7 +14,7 @@ assert word_emb_path
 
 username = Path.home().name
 project_dir = Path(__file__).resolve().parent.parent
-sdk_dir = project_dir.joinpath('/content/MSA-Robustness/CMU-MultimodalSDK')
+sdk_dir = project_dir.joinpath('/content/CMU-MultimodalSDK')
 data_dir = project_dir.joinpath('datasets')
 data_dict = {'mosi': data_dir.joinpath('MOSI'), 'mosei': data_dir.joinpath(
     'MOSEI'), 'ur_funny': data_dir.joinpath('UR_FUNNY')}
