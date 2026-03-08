@@ -80,9 +80,9 @@ def get_loader(config, shuffle=True):
         for sample in batch:
             text = " ".join(sample[0][3])
             encoded_bert_sent = bert_tokenizer(
+                text,
                 truncation=True,         # Cut off if longer than 50
-                padding='max_length',
-                text, 
+                padding='max_length', 
                 max_length=MAX_BERT_LEN, 
                 add_special_tokens=True, 
                 pad_to_max_length=True)
