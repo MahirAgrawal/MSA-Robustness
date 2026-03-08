@@ -75,12 +75,17 @@ def get_loader(config, shuffle=True):
 
         SENT_LEN = sentences.size(0)
         # Create bert indices using tokenizer
-
+        MAX_BERT_LEN = 50
         bert_details = []
         for sample in batch:
             text = " ".join(sample[0][3])
-            encoded_bert_sent = bert_tokenizer.encode_plus(
-                text, max_length=SENT_LEN+2, add_special_tokens=True, pad_to_max_length=True)
+            encoded_bert_sent = bert_tokenizer(
+                truncation=True,         # Cut off if longer than 50
+                padding='max_length',
+                text, 
+                max_length=MAX_BERT_LEN, 
+                add_special_tokens=True, 
+                pad_to_max_length=True)
             bert_details.append(encoded_bert_sent)
 
 
