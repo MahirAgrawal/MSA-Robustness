@@ -26,9 +26,12 @@ class LoRALinear(nn.Module):
         else:
             self.register_parameter('bias', None)
             
-        # LoRA matrices
-        self.lora_A = nn.Parameter(torch.randn(in_features, lora_rank) / math.sqrt(in_features))
-        self.lora_B = nn.Parameter(torch.zeros(lora_rank, out_features))
+        # LoRA matrices  (standard convention: A is rank×in, B is out×rank)
+        # Forward: x @ A.T @ B.T  ==  F.linear(F.linear(x, A), B)
+        # Merge:   W + B @ A  (both already out×in after the matmul)
+        self.lora_A = nn.Parameter(torch.empty(lora_rank, in_features))
+        self.lora_B = nn.Parameter(torch.zeros(out_features, lora_rank))
+        nn.init.kaiming_uniform_(self.lora_A, a=math.sqrt(5))  # B starts zero → no change at init
         
         # Dropout for regularization
         self.dropout = nn.Dropout(lora_dropout)
@@ -47,15 +50,18 @@ class LoRALinear(nn.Module):
         # Main linear transformation
         result = torch.nn.functional.linear(x, self.weight, self.bias)
         
-        # Add LoRA adaptation
-        lora_result = self.dropout(x) @ self.lora_A @ self.lora_B
-        lora_result = lora_result * self.scaling
+        # LoRA path: F.linear(x, A) → shape (…, rank), then F.linear(…, B) → (…, out)
+        lora_result = torch.nn.functional.linear(
+            torch.nn.functional.linear(self.dropout(x), self.lora_A),
+            self.lora_B
+        ) * self.scaling
         
         return result + lora_result
 
     def merge_weights(self):
         """Merge LoRA weights into the main weight matrix (for inference optimization)"""
-        merged_weight = self.weight.data + (self.lora_B @ self.lora_A).t() * self.scaling
+        # lora_B is (out×rank), lora_A is (rank×in) → product is (out×in), same shape as self.weight
+        merged_weight = self.weight.data + (self.lora_B @ self.lora_A) * self.scaling
         self.weight.data = merged_weight
 
 
