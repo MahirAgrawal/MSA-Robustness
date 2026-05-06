@@ -146,7 +146,7 @@ class Solver(object):
                 v    = v.to(self.device)
                 a    = a.to(self.device)
                 y    = y.to(self.device)
-                l    = l.to(self.device)
+                l    = l.cpu()   # pack_padded_sequence requires lengths on CPU
                 bert_sent      = bert_sent.to(self.device)
                 bert_sent_type = bert_sent_type.to(self.device)
                 bert_sent_mask = bert_sent_mask.to(self.device)
@@ -290,7 +290,7 @@ class Solver(object):
                 v    = v.to(self.device)
                 a    = a.to(self.device)
                 y    = y.to(self.device)
-                l    = l.to(self.device)
+                l    = l.cpu()   # pack_padded_sequence requires lengths on CPU
                 bert_sent      = bert_sent.to(self.device)
                 bert_sent_type = bert_sent_type.to(self.device)
                 bert_sent_mask = bert_sent_mask.to(self.device)
