@@ -17,15 +17,25 @@ warnings.filterwarnings('ignore')
 
 
 def get_checkpoint_path(config):
-    """Return the default checkpoint path based on dataset."""
-    if config.data == 'mosi':
-        return 'checkpoints/best_model_mosi.std'
-    elif config.data == 'mosei':
-        return 'checkpoints/best_model_mosei.std'
-    elif config.data == 'ur_funny':
-        return 'checkpoints/best_model_ur_funny.std'
-    else:
-        raise ValueError(f"Unknown dataset: {config.data}")
+    """
+    Mirror solver.py's save_dir logic exactly:
+      checkpoints/{data}/best_{pct}%{modal}={mode}[_LoRA]/best_model.std
+    """
+    pct   = int(config.train_changed_pct * 100)
+    modal = config.train_changed_modal[0].upper()
+
+    if config.train_method == 'g_noise':
+        mode = 'N'
+    elif config.train_method == 'hybird':
+        mode = 'H'
+    else:                   # 'missing' or anything else
+        mode = '0'
+
+    save_dir = f'checkpoints/{config.data}/best_{pct}%{modal}={mode}'
+    if config.use_lora:
+        save_dir += '_LoRA'
+
+    return f'{save_dir}/best_model.std'
 
 
 def load_checkpoint(model, path, config):
