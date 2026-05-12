@@ -1,3 +1,8 @@
+# Changes made for CS590
+- I replace LoRa matrix instead of linear NN whereever it was present.
+- Expected improvement but got similar results to paper.
+- Only thing improved is faster training time and lesser memory. 
+
 # MSA-Robustness
 NAACL 2022 paper on [Analyzing Modality Robustness in Multimodal Sentiment Analysis](https://arxiv.org/pdf/2205.15465.pdf)
 
